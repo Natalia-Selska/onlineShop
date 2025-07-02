@@ -8,7 +8,7 @@ import com.example.onlineshop.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 

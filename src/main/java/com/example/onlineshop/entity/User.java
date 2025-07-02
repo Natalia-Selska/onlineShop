@@ -23,13 +23,9 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @Column(nullable = false)
-    private int age;
-    @Email
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private String login;
+
 }

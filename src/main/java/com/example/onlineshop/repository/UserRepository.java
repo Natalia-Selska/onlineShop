@@ -4,12 +4,13 @@ import jakarta.validation.constraints.Email;
 import com.example.onlineshop.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    boolean existsUserByEmail(@Email String email);
+    boolean existsUserByEmail( String email);
 
-    Optional<User> findUserByLogin(String login);
+    Optional<User> findUserByEmail(String email);
 }

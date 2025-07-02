@@ -22,10 +22,8 @@ public class UserService {
     public void registration(UserRegistrationDto user) {
         String firstName = user.firstName();
         String lastName = user.lastName();
-        String login = user.login();
         String password = passwordEncoder.encode(user.password());
         String email = user.email();
-        int age = user.age();
         log.debug("We check whether the user exists on email");
         if (userRepository.existsUserByEmail(email)) {
             log.error("User exist with this email");
@@ -36,22 +34,19 @@ public class UserService {
                 .firstName(firstName)
                 .lastName(lastName)
                 .password(password)
-                .login(login)
-                .age(age)
                 .build();
         log.debug("User save in repository");
         userRepository.save(user1);
     }
 
     public String authorization(UserAuthorizationDto user) {
-        String login = user.login();
         String password = user.password();
         String email = user.email();
-        log.debug("Find user by login");
-        User user1 = userRepository.findUserByLogin(login)
+        log.debug("Find user by email{}", email);
+        User user1 = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("User not found by login");
-                    return new RuntimeException("User not found by Login");
+                    log.error("User not found by login{}",email);
+                    return new RuntimeException("User not found by email");
                 });
 
         UUID id = user1.getId();
