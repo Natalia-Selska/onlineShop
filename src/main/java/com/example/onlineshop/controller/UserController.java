@@ -1,5 +1,6 @@
 package com.example.onlineshop.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import com.example.onlineshop.entity.dto.UserAuthorizationDto;
 import com.example.onlineshop.entity.dto.UserRegistrationDto;
@@ -13,12 +14,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/registration")
-    public void registration(@RequestBody UserRegistrationDto user) {
+    public void registration(@RequestBody @Valid UserRegistrationDto user) {
         userService.registration(user);
     }
 
     @PostMapping("/authorization")
-    public String authorization(@RequestBody UserAuthorizationDto user) {
+    public String authorization(@RequestBody @Valid UserAuthorizationDto user) {
      return   userService.authorization(user);
     }
 }
