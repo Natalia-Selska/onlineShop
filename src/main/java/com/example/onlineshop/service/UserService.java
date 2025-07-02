@@ -8,6 +8,7 @@ import com.example.onlineshop.entity.dto.UserRegistrationDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.onlineshop.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthorizationService authorizationService;
 
+    @Transactional
     public void registration(UserRegistrationDto user) {
         String firstName = user.firstName();
         String lastName = user.lastName();
@@ -38,6 +40,7 @@ public class UserService {
         log.debug("User save in repository");
         userRepository.save(user1);
     }
+
 
     public String authorization(UserAuthorizationDto user) {
         String password = user.password();
