@@ -2,7 +2,7 @@ package com.example.onlineshop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.example.onlineshop.entity.User;
+import com.example.onlineshop.entity.model.User;
 import com.example.onlineshop.entity.dto.UserAuthorizationDto;
 import com.example.onlineshop.entity.dto.UserRegistrationDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +48,7 @@ public class UserService {
         log.debug("Find user by email{}", email);
         User user1 = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("User not found by login{}",email);
+                    log.error("User not found by login{}", email);
                     return new RuntimeException("User not found by email");
                 });
 
@@ -63,4 +63,18 @@ public class UserService {
         }
     }
 
+    public void updateInfo(UserRegistrationDto user) {
+        String firstName = user.firstName();
+        String lastName = user.lastName();
+        String password = passwordEncoder.encode(user.password());
+        String email = user.email();
+        User user1 = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Not found this email"));
+
+        user1.setEmail(email);
+        user1.setPassword(password);
+        user1.setFirstName(firstName);
+        user1.setLastName(lastName);
+        userRepository.save(user1);
+    }
 }

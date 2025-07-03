@@ -7,6 +7,8 @@ import com.example.onlineshop.entity.dto.UserRegistrationDto;
 import org.springframework.web.bind.annotation.*;
 import com.example.onlineshop.service.UserService;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -20,6 +22,11 @@ public class UserController {
 
     @PostMapping("/authorization")
     public String authorization(@RequestBody @Valid UserAuthorizationDto user) {
-     return   userService.authorization(user);
+        return userService.authorization(user);
+    }
+
+    @PutMapping("/updateInfo{id}")
+    public void updateInfo(@PathVariable("id") @RequestBody UserRegistrationDto userRegistrationDto) {
+        userService.updateInfo(userRegistrationDto);
     }
 }
