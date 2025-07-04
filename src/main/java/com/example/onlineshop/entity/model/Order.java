@@ -1,9 +1,11 @@
 package com.example.onlineshop.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,13 +22,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private Integer number;
+    @CreationTimestamp
     private Timestamp timestamp;
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
+
     private User user;
 
+
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "order_products",
             joinColumns = @JoinColumn(name = "order_id"),
