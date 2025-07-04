@@ -1,5 +1,6 @@
 package com.example.onlineshop.service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,5 +38,18 @@ public class AuthorizationService {
             return false;
         }
     }
+
+    public UUID extractUserId(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(new SecretKeySpec(secretKey.getEncoded(), SignatureAlgorithm.HS256.getJcaName()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        String id = claims.get("id", String.class);
+        return UUID.fromString(id);
+    }
+
+
 
 }

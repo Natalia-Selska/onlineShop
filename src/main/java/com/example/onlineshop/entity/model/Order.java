@@ -17,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private Integer number;
     private Timestamp timestamp;
