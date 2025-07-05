@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.onlineshop.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -63,7 +64,7 @@ public class UserService {
         }
     }
 
-    public void updateInfo(UserRegistrationDto user) {
+    public User updateInfo(UserRegistrationDto user) {
         String firstName = user.firstName();
         String lastName = user.lastName();
         String password = passwordEncoder.encode(user.password());
@@ -75,6 +76,14 @@ public class UserService {
         user1.setPassword(password);
         user1.setFirstName(firstName);
         user1.setLastName(lastName);
-        userRepository.save(user1);
+        return userRepository.save(user1);
+    }
+
+    public User findById(UUID uuid) {
+        return userRepository.findById(uuid)
+                .orElseThrow(() -> {
+                    log.error("User not found by id");
+                    return new RuntimeException("User not found with id ");
+                });
     }
 }

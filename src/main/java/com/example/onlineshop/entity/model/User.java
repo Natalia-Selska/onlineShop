@@ -30,5 +30,5 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
-    List<Order> orders = new ArrayList<>();
+    List<Order> orders;
 }

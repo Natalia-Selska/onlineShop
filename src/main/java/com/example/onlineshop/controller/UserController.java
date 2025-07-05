@@ -1,5 +1,6 @@
 package com.example.onlineshop.controller;
 
+import com.example.onlineshop.entity.model.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import com.example.onlineshop.entity.dto.UserAuthorizationDto;
@@ -25,8 +26,8 @@ public class UserController {
         return userService.authorization(user);
     }
 
-    @PutMapping("/updateInfo{id}")
-    public void updateInfo(@PathVariable("id") @RequestBody UserRegistrationDto userRegistrationDto) {
-        userService.updateInfo(userRegistrationDto);
+    @PutMapping("/{id}")
+    public User updateInfo(@PathVariable("id") @RequestBody UserRegistrationDto userRegistrationDto) {
+        return userService.updateInfo(userRegistrationDto);
     }
 }

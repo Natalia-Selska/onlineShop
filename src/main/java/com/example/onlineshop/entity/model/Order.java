@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +24,10 @@ public class Order {
     private UUID id;
     private Integer number;
     @CreationTimestamp
-    private Timestamp timestamp;
+    private LocalDateTime dateTime ;
 
     @ManyToOne()
-    @JoinColumn(name = "user_id")
-
+    @JoinColumn(name = "userId")
     private User user;
 
 
@@ -38,6 +38,6 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products ;
 
 }
