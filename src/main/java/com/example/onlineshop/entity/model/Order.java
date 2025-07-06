@@ -24,9 +24,9 @@ public class Order {
     private UUID id;
     private Integer number;
     @CreationTimestamp
-    private LocalDateTime dateTime ;
+    private LocalDateTime dateTime;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 

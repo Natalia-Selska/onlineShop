@@ -1,7 +1,9 @@
 package com.example.onlineshop.service;
 
 import com.example.onlineshop.entity.dto.ProductDto;
+import com.example.onlineshop.entity.dto.ProductUpdateDto;
 import com.example.onlineshop.entity.model.Product;
+import com.example.onlineshop.entity.model.User;
 import com.example.onlineshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +19,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final UserService userService;
+    private final AuthorizationService authorizationService;
 
     @Transactional
-    public void addProduct(ProductDto productDto) {
+    public void addProduct(ProductDto productDto, String token) {
+        UUID id = authorizationService.extractUserId(token);
+        log.info("Looking for a user by id, whether he is authorized");
+        User userId = userService.findById(id);
         String name = productDto.name();
         Integer count = productDto.count();
         BigDecimal cost = productDto.cost();
@@ -37,11 +44,11 @@ public class ProductService {
                 });
     }
 
-    public Product updateProduct(ProductDto productDto, UUID id) {
-        String name = productDto.name();
-        Integer count = productDto.count();
-        BigDecimal cost = productDto.cost();
-        log.debug("Product find by id{}", name);
+    public Product updateProduct(ProductUpdateDto productUpdateDto, UUID id) {
+        String name = productUpdateDto.name();
+        Integer count = productUpdateDto.count();
+        BigDecimal cost = productUpdateDto.cost();
+        log.debug("Product find by id {}", name);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("This product not find");
@@ -58,7 +65,7 @@ public class ProductService {
             product.setCount(count);
         }
 
-        log.debug("Product saved after update{}", name);
+        log.debug("Product saved after update {}", name);
         productRepository.save(product);
         return product;
     }
@@ -67,10 +74,9 @@ public class ProductService {
     public void deleteProduct(UUID id) {
         log.debug("Find product by name");
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found")
-                );
+                .orElseThrow(() -> new RuntimeException("Product not found"));
         if (!product.getOrderList().isEmpty()) {
-            log.error("Can not delete: this product user in order{}", product);
+            log.error("Can not delete: this product user in order {}", product);
             throw new RuntimeException("Can not delete: this product used in order");
         }
         productRepository.delete(product);

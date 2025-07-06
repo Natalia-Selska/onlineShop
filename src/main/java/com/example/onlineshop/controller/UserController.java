@@ -26,8 +26,8 @@ public class UserController {
         return userService.authorization(user);
     }
 
-    @PutMapping("/{id}")
-    public User updateInfo(@PathVariable("id") @RequestBody UserRegistrationDto userRegistrationDto) {
+    @PutMapping
+    public User updateInfo(@RequestBody UserRegistrationDto userRegistrationDto) {
         return userService.updateInfo(userRegistrationDto);
     }
 }

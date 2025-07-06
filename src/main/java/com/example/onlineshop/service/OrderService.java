@@ -33,21 +33,19 @@ public class OrderService {
             throw new RuntimeException("No valid products found for IDs: " + orderProductDto.productsId());
         }
         UUID id = authorizationService.extractUserId(token);
-        log.debug("Find user by id{}", id);
+        log.debug("Find user by id {}", id);
         User user = userService.findById(id);
         Order order = new Order();
         order.setUser(user);
         order.setProducts(productList);
-        log.debug("Find max number order");
-        Integer number = orderRepository.findMaxOrderNumber();
-        order.setNumber(number == null ? 1 : number + 1);
+        order.setNumber(orderRepository.getNextOrderNumber());
         orderRepository.save(order);
     }
 
     public List<Order> findOrderByUser(UUID id) {
-        log.info("Find user by id{}", id);
+        log.info("Find user by id {}", id);
         User user = userService.findById(id);
-        log.info("Find all orders by user id{}",id);
+        log.info("Find all orders by user id {}", id);
         List<Order> orders = orderRepository.findByUserId(user.getId());
         return orders;
 

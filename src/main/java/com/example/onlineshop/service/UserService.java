@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.onlineshop.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+
 import java.util.UUID;
 
 @Service
@@ -46,10 +46,10 @@ public class UserService {
     public String authorization(UserAuthorizationDto user) {
         String password = user.password();
         String email = user.email();
-        log.debug("Find user by email{}", email);
+        log.debug("Find user by email {}", email);
         User user1 = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("User not found by login{}", email);
+                    log.error("User not found by login {}", email);
                     return new RuntimeException("User not found by email");
                 });
 
@@ -70,7 +70,7 @@ public class UserService {
         String password = passwordEncoder.encode(user.password());
         String email = user.email();
         User user1 = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Not found this email"));
+                .orElseThrow(() -> new RuntimeException("Not found this email "+email));
 
         user1.setEmail(email);
         user1.setPassword(password);
@@ -82,8 +82,11 @@ public class UserService {
     public User findById(UUID uuid) {
         return userRepository.findById(uuid)
                 .orElseThrow(() -> {
-                    log.error("User not found by id");
+                    log.error("User not found by id {}",uuid);
                     return new RuntimeException("User not found with id ");
                 });
     }
+
+
+
 }

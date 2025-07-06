@@ -12,4 +12,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Integer findMaxOrderNumber();
 
     List<Order> findByUserId(UUID id);
+
+    @Query("SELECT COALESCE(MAX(o.number), 0) + 1 FROM Order o")
+    Integer getNextOrderNumber();
+
 }

@@ -1,15 +1,18 @@
 package com.example.onlineshop.entity.dto;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
 
 public record ProductDto(
-        @Column(nullable = false)
+        @NotEmpty
+        @Pattern(regexp = "^[A-Za-z]+$")
         String name,
-        @Column(nullable = false)
+        @NotEmpty
         Integer count,
-        @Column(nullable = false)
+        @NotEmpty
         BigDecimal cost
 ) {
 

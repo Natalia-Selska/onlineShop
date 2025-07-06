@@ -20,8 +20,8 @@ import java.util.UUID;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/{token}")
-    public void addOrder(@Valid @PathVariable("token") String token, @RequestBody OrderProductDto orderProductDto) {
+    @PostMapping
+    public void addOrder( @RequestHeader("token") String token,@Valid @RequestBody OrderProductDto orderProductDto) {
         orderService.addOrder(orderProductDto, token);
     }
 
