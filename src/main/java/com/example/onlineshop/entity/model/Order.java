@@ -22,6 +22,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(nullable = false)
     private Integer number;
     @CreationTimestamp
     private LocalDateTime dateTime;

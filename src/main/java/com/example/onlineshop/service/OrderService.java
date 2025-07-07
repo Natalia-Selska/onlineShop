@@ -26,7 +26,7 @@ public class OrderService {
 
     @Transactional
     public void addOrder(OrderProductDto orderProductDto, String token) {
-        log.debug("Find all products by id");
+        log.debug("Find all products by id {}", orderProductDto.productsId());
         List<Product> productList = productService.findAllById(orderProductDto.productsId());
         if (productList.isEmpty()) {
             log.error("Not found products by id");

@@ -27,10 +27,10 @@ public class UserService {
         String lastName = user.lastName();
         String password = passwordEncoder.encode(user.password());
         String email = user.email();
-        log.debug("We check whether the user exists on email");
+        log.debug("We check whether the user exists on email {}", email);
         if (userRepository.existsUserByEmail(email)) {
-            log.error("User exist with this email");
-            throw new RuntimeException("User exist with this email");
+            log.error("User exist with this email {}", email);
+            throw new RuntimeException("User exist with this email " + email);
         }
         User user1 = User.builder()
                 .email(email)
@@ -38,7 +38,7 @@ public class UserService {
                 .lastName(lastName)
                 .password(password)
                 .build();
-        log.debug("User save in repository");
+        log.debug("User save in repository {}", user1);
         userRepository.save(user1);
     }
 
@@ -50,7 +50,7 @@ public class UserService {
         User user1 = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found by login {}", email);
-                    return new RuntimeException("User not found by email");
+                    return new RuntimeException("User not found by email " + email);
                 });
 
         UUID id = user1.getId();
@@ -70,7 +70,7 @@ public class UserService {
         String password = passwordEncoder.encode(user.password());
         String email = user.email();
         User user1 = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Not found this email "+email));
+                .orElseThrow(() -> new RuntimeException("Not found this email " + email));
 
         user1.setEmail(email);
         user1.setPassword(password);
@@ -82,11 +82,10 @@ public class UserService {
     public User findById(UUID uuid) {
         return userRepository.findById(uuid)
                 .orElseThrow(() -> {
-                    log.error("User not found by id {}",uuid);
+                    log.error("User not found by id {}", uuid);
                     return new RuntimeException("User not found with id ");
                 });
     }
-
 
 
 }

@@ -30,4 +30,6 @@ public class UserController {
     public User updateInfo(@RequestBody UserRegistrationDto userRegistrationDto) {
         return userService.updateInfo(userRegistrationDto);
     }
+
+
 }

@@ -25,7 +25,7 @@ public class ProductService {
     @Transactional
     public void addProduct(ProductDto productDto, String token) {
         UUID id = authorizationService.extractUserId(token);
-        log.info("Looking for a user by id, whether he is authorized");
+        log.info("Looking for a user by id, whether he is authorized {}", id);
         User userId = userService.findById(id);
         String name = productDto.name();
         Integer count = productDto.count();
@@ -39,7 +39,7 @@ public class ProductService {
                             .count(count)
                             .name(name)
                             .build();
-                    log.debug("Product save");
+                    log.debug("Product save {}", product1);
                     return productRepository.save(product1);
                 });
     }
@@ -54,7 +54,7 @@ public class ProductService {
                     log.error("This product not find");
                     return new RuntimeException("This product not find");
                 });
-        log.info("Product update");
+        log.info("Product update {}", product);
         if (name != null) {
             product.setName(name);
         }
@@ -72,7 +72,7 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(UUID id) {
-        log.debug("Find product by name");
+        log.debug("Find product by id {}", id);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         if (!product.getOrderList().isEmpty()) {
