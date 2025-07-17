@@ -1,12 +1,11 @@
 package com.example.onlineshop.service;
 
-import com.example.onlineshop.entity.Role;
+import com.example.onlineshop.entity.model.Role;
 import com.example.onlineshop.entity.enumeration.RoleEnum;
 import com.example.onlineshop.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 

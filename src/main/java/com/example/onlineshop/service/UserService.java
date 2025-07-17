@@ -1,5 +1,7 @@
 package com.example.onlineshop.service;
 
+import com.example.onlineshop.entity.model.Role;
+import com.example.onlineshop.entity.enumeration.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.example.onlineshop.entity.User;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.example.onlineshop.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -38,6 +42,7 @@ public class UserService {
                 .firstName(firstName)
                 .lastName(lastName)
                 .password(password)
+                .roles(Set.of(role))
                 .build();
         log.debug("User save in repository");
         userRepository.save(user1);
@@ -53,10 +58,10 @@ public class UserService {
                     log.error("User not found by login{}", email);
                     return new RuntimeException("User not found by email");
                 });
-
-        UUID id = user2.getId();
+        UUID id = user1.getId();
+        Set<Role> roles = user1.getRoles();
         log.debug("check if the password is correct");
-        if (!passwordEncoder.matches(password, user2.getPassword())) {
+        if (!passwordEncoder.matches(password, user1.getPassword())) {
             log.error("invalid password");
             throw new RuntimeException("Invalid password");
         } else {
@@ -71,6 +76,9 @@ public class UserService {
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
+    }
+    public Optional<User> findById(UUID id ){
+       return userRepository.findById(id);
     }
 
 }

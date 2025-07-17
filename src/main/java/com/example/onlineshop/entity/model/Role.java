@@ -1,5 +1,6 @@
-package com.example.onlineshop.entity;
+package com.example.onlineshop.entity.model;
 
+import com.example.onlineshop.entity.User;
 import com.example.onlineshop.entity.enumeration.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;

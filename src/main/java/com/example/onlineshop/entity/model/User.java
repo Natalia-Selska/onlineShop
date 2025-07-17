@@ -1,12 +1,13 @@
 package com.example.onlineshop.entity;
 
+import com.example.onlineshop.entity.model.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity

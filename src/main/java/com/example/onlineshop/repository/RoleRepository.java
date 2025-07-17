@@ -1,6 +1,6 @@
 package com.example.onlineshop.repository;
 
-import com.example.onlineshop.entity.Role;
+import com.example.onlineshop.entity.model.Role;
 import com.example.onlineshop.entity.enumeration.RoleEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

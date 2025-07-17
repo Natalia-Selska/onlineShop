@@ -1,9 +1,11 @@
 package com.example.onlineshop.service;
 
+import com.example.onlineshop.entity.User;
+
 import com.example.onlineshop.entity.dto.OrderProductDto;
 import com.example.onlineshop.entity.model.Order;
 import com.example.onlineshop.entity.model.Product;
-import com.example.onlineshop.entity.model.User;
+
 import com.example.onlineshop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -23,7 +26,6 @@ public class OrderService {
     private final UserService userService;
     private final ProductService productService;
 
-
     @Transactional
     public void addOrder(OrderProductDto orderProductDto, String token) {
         log.debug("Find all products by id {}", orderProductDto.productsId());
@@ -34,7 +36,8 @@ public class OrderService {
         }
         UUID id = authorizationService.extractUserId(token);
         log.debug("Find user by id {}", id);
-        User user = userService.findById(id);
+        User user = userService.findById(id)
+                .orElseThrow();
         Order order = new Order();
         order.setUser(user);
         order.setProducts(productList);
@@ -44,10 +47,8 @@ public class OrderService {
 
     public List<Order> findOrderByUser(UUID id) {
         log.info("Find user by id {}", id);
-        User user = userService.findById(id);
+        User user = userService.findById(id).orElseThrow();
         log.info("Find all orders by user id {}", id);
-        List<Order> orders = orderRepository.findByUserId(user.getId());
-        return orders;
-
+        return orderRepository.findByUserId(user.getId());
     }
 }

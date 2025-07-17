@@ -1,6 +1,6 @@
 package com.example.onlineshop.service;
 
-import com.example.onlineshop.entity.Role;
+import com.example.onlineshop.entity.model.Role;
 import com.example.onlineshop.entity.enumeration.RoleEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -59,7 +59,15 @@ public class AuthorizationService {
                 .collect(Collectors.toSet());
     }
 
+    public UUID extractUserId(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith((SecretKey) secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
+       return UUID.fromString( claims.get("id", String.class));
+    }
 
 
 }
