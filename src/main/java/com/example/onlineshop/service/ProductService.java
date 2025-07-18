@@ -1,9 +1,9 @@
 package com.example.onlineshop.service;
 
+import com.example.onlineshop.entity.User;
 import com.example.onlineshop.entity.dto.ProductDto;
 import com.example.onlineshop.entity.dto.ProductUpdateDto;
 import com.example.onlineshop.entity.model.Product;
-import com.example.onlineshop.entity.model.User;
 import com.example.onlineshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,7 +27,7 @@ public class ProductService {
     public void addProduct(ProductDto productDto, String token) {
         UUID id = authorizationService.extractUserId(token);
         log.info("Looking for a user by id, whether he is authorized {}", id);
-        User userId = userService.findById(id);
+        Optional<User> userId = userService.findById(id);
         String name = productDto.name();
         Integer count = productDto.count();
         BigDecimal cost = productDto.cost();
@@ -72,6 +73,7 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(UUID id) {
+
         log.debug("Find product by id {}", id);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
