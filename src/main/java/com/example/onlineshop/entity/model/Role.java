@@ -26,7 +26,7 @@ public class Role {
     private Set<User> users;
 
     public Role(RoleEnum roleEnum) {
-        this.roleEnum=roleEnum;
+        this.roleEnum = roleEnum;
     }
 
 

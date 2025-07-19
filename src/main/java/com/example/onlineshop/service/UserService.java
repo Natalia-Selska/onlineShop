@@ -2,6 +2,7 @@ package com.example.onlineshop.service;
 
 import com.example.onlineshop.entity.model.Role;
 import com.example.onlineshop.entity.enumeration.RoleEnum;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.example.onlineshop.entity.User;
@@ -16,6 +17,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.example.onlineshop.entity.enumeration.RoleEnum.ADMIN_ROLE;
+import static com.example.onlineshop.entity.enumeration.RoleEnum.USER_ROLE;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,60 +29,72 @@ public class UserService {
     private final RoleService roleService;
     private final AuthorizationService authorizationService;
 
+    @PostConstruct
+    public void addUserAndRole() {
+        roleService.createIfNotExist(ADMIN_ROLE);
+        roleService.createIfNotExist(USER_ROLE);
+        Role adminRole = roleService.findRoleByRoleEnum(ADMIN_ROLE);
+        Role userRole = roleService.findRoleByRoleEnum(USER_ROLE);
+
+        User user = User.builder()
+                .email("admin@gmail.com")
+                .firstName("Admin")
+                .lastName("Admin")
+                .password(passwordEncoder.encode("qwertyui"))
+                .roles(Set.of(adminRole, userRole))
+                .build();
+        userRepository.findUserByEmail(user.getEmail())
+                .orElseGet(() -> userRepository.save(user));
+
+    }
+
     @Transactional
-    public void registration(UserRegistrationDto user) {
-        String firstName = user.firstName();
-        String lastName = user.lastName();
-        String password = passwordEncoder.encode(user.password());
+    public void registration(UserRegistrationDto userRegistrationDto) {
+        String firstName = userRegistrationDto.firstName();
+        String lastName = userRegistrationDto.lastName();
+        String password = passwordEncoder.encode(userRegistrationDto.password());
         Role role = roleService.findRoleByRoleEnum(RoleEnum.USER_ROLE);
-        String email = user.email();
-        log.debug("We check whether the user exists on email");
+        String email = userRegistrationDto.email();
+        log.debug("We check whether the userRegistrationDto exists by email {}", email);
         if (userRepository.existsUserByEmail(email)) {
-            log.error("User exist with this email");
+            log.error("User exist with this email {}", email);
             throw new RuntimeException("User exist with this email");
         }
-        User user1 = User.builder()
+        User user = User.builder()
                 .email(email)
                 .firstName(firstName)
                 .lastName(lastName)
                 .password(password)
                 .roles(Set.of(role))
                 .build();
-        log.debug("User save in repository");
-        userRepository.save(user1);
+        log.debug("User save in repository {}", user);
+        userRepository.save(user);
     }
 
 
-    public String authorization(UserAuthorizationDto user) {
-        String password = user.password();
-        String email = user.email();
-        log.debug("Find user by email{}", email);
-        User user1 = userRepository.findUserByEmail(email)
+    public String authorization(UserAuthorizationDto userAuthorizationDto) {
+        String password = userAuthorizationDto.password();
+        String email = userAuthorizationDto.email();
+        log.debug("Find user by email {}", email);
+        User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("User not found by login{}", email);
+                    log.error("User not found by email {}", email);
                     return new RuntimeException("User not found by email");
                 });
-        UUID id = user1.getId();
-        Set<Role> roles = user1.getRoles();
-        log.debug("check if the password is correct");
-        if (!passwordEncoder.matches(password, user1.getPassword())) {
-            log.error("invalid password");
+        UUID id = user.getId();
+        log.debug("check if the password is correct for user with email {}", email);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.error("invalid password for user with email {}", email);
             throw new RuntimeException("Invalid password");
         } else {
-            log.info("issue a token");
+            Set<Role> roles = user.getRoles();
+            log.info("issue a token for user with email {}", email);
             return authorizationService.genetateToken(id, email, roles);
         }
     }
 
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-    public Optional<User> findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
-    }
-    public Optional<User> findById(UUID id ){
-       return userRepository.findById(id);
+    public Optional<User> findById(UUID id) {
+        return userRepository.findById(id);
     }
 
 }

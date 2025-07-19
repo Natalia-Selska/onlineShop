@@ -31,15 +31,15 @@ public class ProductService {
         String name = productDto.name();
         Integer count = productDto.count();
         BigDecimal cost = productDto.cost();
-        log.debug("Find product by name{}", name);
+        log.debug("Find product by name {}", name);
         Product product = productRepository.findByName(name)
                 .orElseGet(() -> {
-                    log.info("Product build");
                     Product product1 = Product.builder()
                             .cost(cost)
                             .count(count)
                             .name(name)
                             .build();
+                    log.info("Product build by name {}", name);
                     log.debug("Product save {}", product1);
                     return productRepository.save(product1);
                 });
@@ -52,7 +52,7 @@ public class ProductService {
         log.debug("Product find by id {}", name);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.error("This product not find");
+                    log.error("This product not find by id {}", id);
                     return new RuntimeException("This product not find");
                 });
         log.info("Product update {}", product);
@@ -65,7 +65,6 @@ public class ProductService {
         if (count != null) {
             product.setCount(count);
         }
-
         log.debug("Product saved after update {}", name);
         productRepository.save(product);
         return product;
@@ -73,7 +72,6 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(UUID id) {
-
         log.debug("Find product by id {}", id);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -82,7 +80,7 @@ public class ProductService {
             throw new RuntimeException("Can not delete: this product used in order");
         }
         productRepository.delete(product);
-        log.debug("Deleted product");
+        log.debug("Deleted product by id {}", id);
     }
 
     public List<Product> getProducts() {

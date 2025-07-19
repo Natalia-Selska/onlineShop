@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
 public record ProductDto(
-        @NotEmpty
         @Pattern(regexp = "^[A-Za-z]+$")
         String name,
         @NotNull

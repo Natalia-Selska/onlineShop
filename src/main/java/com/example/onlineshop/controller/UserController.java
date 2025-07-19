@@ -23,28 +23,6 @@ import static com.example.onlineshop.entity.enumeration.RoleEnum.USER_ROLE;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
-
-    @PostConstruct
-    public void addUserAndRole() {
-        roleService.createIfNotExist(ADMIN_ROLE);
-        roleService.createIfNotExist(USER_ROLE);
-        Role adminRole = roleService.findRoleByRoleEnum(ADMIN_ROLE);
-        Role userRole = roleService.findRoleByRoleEnum(USER_ROLE);
-
-        User user = User.builder()
-                .email("admin@gmail.com")
-                .firstName("Admin")
-                .lastName("Admin")
-                .password(passwordEncoder.encode("qwertyui"))
-                .roles(Set.of(adminRole, userRole))
-                .build();
-        Optional<User> user1 = userService.findUserByEmail(user.getEmail());
-        if (user1.isEmpty()) {
-            userService.save(user);
-        }
-    }
 
     @PostMapping("/registration")
     public void registration(@RequestBody @Valid UserRegistrationDto user) {
@@ -53,6 +31,6 @@ public class UserController {
 
     @PostMapping("/authorization")
     public String authorization(@RequestBody @Valid UserAuthorizationDto user) {
-     return   userService.authorization(user);
+        return userService.authorization(user);
     }
 }

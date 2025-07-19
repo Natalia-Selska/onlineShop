@@ -13,7 +13,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
-    private final AuthorizationService authorizationService;
 
     public Role findRoleByRoleEnum(RoleEnum roleEnum) {
         return roleRepository.findRoleByRoleEnum(roleEnum)
@@ -26,11 +25,5 @@ public class RoleService {
             roleRepository.save(role);
         }
     }
-
-    public Set<Role> findRolesByUserId(UUID uuid) {
-        return roleRepository.findRolesByUserId(uuid);
-    }
-
-
 
 }
