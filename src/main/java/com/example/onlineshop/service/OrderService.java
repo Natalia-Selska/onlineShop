@@ -31,7 +31,7 @@ public class OrderService {
         log.debug("Find all products by id {}", orderProductDto.productsId());
         List<Product> productList = productService.findAllById(orderProductDto.productsId());
         if (productList.isEmpty()) {
-            log.error("Not found products");
+            log.error("Not found products by ids {}", productList);
             throw new RuntimeException("No valid products found for IDs: " + orderProductDto.productsId());
         }
         UUID id = authorizationService.extractUserId(token);

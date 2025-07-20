@@ -14,10 +14,4 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
 
     Optional<Role> findRoleByRoleEnum(RoleEnum roleEnum);
 
-    boolean existsRoleByRoleEnum(RoleEnum roleEnum);
-
-    @Query("SELECT r FROM Role r JOIN r.users u WHERE u.id = :userId")
-    Set<Role> findRolesByUserId(@Param("userId") UUID userId);
-
-
 }

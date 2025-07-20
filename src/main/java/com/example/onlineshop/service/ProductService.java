@@ -27,21 +27,21 @@ public class ProductService {
     public void addProduct(ProductDto productDto, String token) {
         UUID id = authorizationService.extractUserId(token);
         log.info("Looking for a user by id, whether he is authorized {}", id);
-        Optional<User> userId = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         String name = productDto.name();
         Integer count = productDto.count();
         BigDecimal cost = productDto.cost();
         log.debug("Find product by name {}", name);
         Product product = productRepository.findByName(name)
                 .orElseGet(() -> {
-                    Product product1 = Product.builder()
+                    Product newProduct = Product.builder()
                             .cost(cost)
                             .count(count)
                             .name(name)
                             .build();
                     log.info("Product build by name {}", name);
-                    log.debug("Product save {}", product1);
-                    return productRepository.save(product1);
+                    log.debug("Product save {}", newProduct);
+                    return productRepository.save(newProduct);
                 });
     }
 

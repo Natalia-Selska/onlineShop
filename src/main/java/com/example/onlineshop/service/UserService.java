@@ -31,17 +31,13 @@ public class UserService {
 
     @PostConstruct
     public void addUserAndRole() {
-        roleService.createIfNotExist(ADMIN_ROLE);
-        roleService.createIfNotExist(USER_ROLE);
-        Role adminRole = roleService.findRoleByRoleEnum(ADMIN_ROLE);
-        Role userRole = roleService.findRoleByRoleEnum(USER_ROLE);
-
+        Set<Role> rolesSet = roleService.createRoles(Set.of(ADMIN_ROLE, USER_ROLE));
         User user = User.builder()
                 .email("admin@gmail.com")
                 .firstName("Admin")
                 .lastName("Admin")
                 .password(passwordEncoder.encode("qwertyui"))
-                .roles(Set.of(adminRole, userRole))
+                .roles(rolesSet)
                 .build();
         userRepository.findUserByEmail(user.getEmail())
                 .orElseGet(() -> userRepository.save(user));
@@ -67,7 +63,7 @@ public class UserService {
                 .password(password)
                 .roles(Set.of(role))
                 .build();
-        log.debug("User save in repository {}", user);
+        log.debug("User save in repository by email {}", user.getEmail());
         userRepository.save(user);
     }
 

@@ -20,15 +20,15 @@ public class AuthorizationService {
 
     private final Key secretKey = Keys.hmacShaKeyFor("super-secret-key-12345678901234567890".getBytes());
 
-    public String genetateToken(UUID id, String email, Set<Role> role) {
-        List<String> roleNames = role.stream()
-                .map((role1)->role1.getRoleEnum().name())
+    public String genetateToken(UUID id, String email, Set<Role> roles) {
+        List<String> roleNames = roles.stream()
+                .map((role) -> role.getRoleEnum().name())
                 .toList();
         return Jwts.builder()
                 .subject(email) // що записати в токен (користувача)
                 .issuedAt(new Date()) // коли створено
                 .claim("id", id)
-                .claim("role", roleNames)
+                .claim("roles", roleNames)
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // коли закінчується (24 години)
                 .signWith(secretKey) // підписати токен секретом
                 .compact();
@@ -45,6 +45,7 @@ public class AuthorizationService {
             return false;
         }
     }
+
     public Set<RoleEnum> extractRoles(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith((SecretKey) secretKey)
@@ -66,7 +67,7 @@ public class AuthorizationService {
                 .parseSignedClaims(token)
                 .getPayload();
 
-       return UUID.fromString( claims.get("id", String.class));
+        return UUID.fromString(claims.get("id", String.class));
     }
 
 

@@ -6,8 +6,10 @@ import com.example.onlineshop.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,11 +21,19 @@ public class RoleService {
                 .orElseThrow();
     }
 
-    public void createIfNotExist(RoleEnum roleEnum) {
-        if (!roleRepository.existsRoleByRoleEnum(roleEnum)) {
-            Role role = new Role(roleEnum);
-            roleRepository.save(role);
+    public Set<Role> createRoles(Set<RoleEnum> roleEnums) {
+        Set<Role> roles = new HashSet<>();
+        for (RoleEnum roleEnum : roleEnums) {
+            Role role = roleRepository.findRoleByRoleEnum(roleEnum)
+                    .orElseGet(() -> {
+                        Role newRole = new Role();
+                        newRole.setRoleEnum(roleEnum);
+                        return roleRepository.save(newRole);
+                    });
+
+            roles.add(role);
         }
+        return roles;
     }
 
 }
