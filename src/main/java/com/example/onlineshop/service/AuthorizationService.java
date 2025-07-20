@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class AuthorizationService {
 
     private final Key secretKey = Keys.hmacShaKeyFor("super-secret-key-12345678901234567890".getBytes());
+    private static final String ROLE_CLAIM = "roles";
 
     public String genetateToken(UUID id, String email, Set<Role> roles) {
         List<String> roleNames = roles.stream()
@@ -28,7 +29,7 @@ public class AuthorizationService {
                 .subject(email) // що записати в токен (користувача)
                 .issuedAt(new Date()) // коли створено
                 .claim("id", id)
-                .claim("roles", roleNames)
+                .claim(ROLE_CLAIM, roleNames)
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // коли закінчується (24 години)
                 .signWith(secretKey) // підписати токен секретом
                 .compact();
@@ -53,7 +54,7 @@ public class AuthorizationService {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        List<String> roleNames = claims.get("role", List.class);
+        List<String> roleNames = claims.get(ROLE_CLAIM, List.class);
 
         return roleNames.stream()
                 .map(RoleEnum::valueOf)
