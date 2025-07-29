@@ -12,18 +12,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.onlineshop.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.example.onlineshop.entity.enumeration.RoleEnum.ADMIN_ROLE;
-import static com.example.onlineshop.entity.enumeration.RoleEnum.USER_ROLE;
+import static com.example.onlineshop.entity.enumeration.RoleEnum.ROLE_ADMIN;
+import static com.example.onlineshop.entity.enumeration.RoleEnum.ROLE_USER;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
@@ -31,7 +30,7 @@ public class UserService {
 
     @PostConstruct
     public void addUserAndRole() {
-        Set<Role> rolesSet = roleService.createRoles(Set.of(ADMIN_ROLE, USER_ROLE));
+        Set<Role> rolesSet = roleService.createRoles(Set.of(ROLE_ADMIN, ROLE_USER));
         User user = User.builder()
                 .email("admin@gmail.com")
                 .firstName("Admin")
@@ -49,7 +48,7 @@ public class UserService {
         String firstName = userRegistrationDto.firstName();
         String lastName = userRegistrationDto.lastName();
         String password = passwordEncoder.encode(userRegistrationDto.password());
-        Role role = roleService.findRoleByRoleEnum(RoleEnum.USER_ROLE);
+        Role role = roleService.findRoleByRoleEnum(ROLE_USER);
         String email = userRegistrationDto.email();
         log.debug("We check whether the userRegistrationDto exists by email {}", email);
         if (userRepository.existsUserByEmail(email)) {
@@ -92,5 +91,7 @@ public class UserService {
     public Optional<User> findById(UUID id) {
         return userRepository.findById(id);
     }
+
+
 
 }

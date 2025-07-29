@@ -15,8 +15,8 @@ import com.example.onlineshop.service.UserService;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.example.onlineshop.entity.enumeration.RoleEnum.ADMIN_ROLE;
-import static com.example.onlineshop.entity.enumeration.RoleEnum.USER_ROLE;
+import static com.example.onlineshop.entity.enumeration.RoleEnum.ROLE_ADMIN;
+import static com.example.onlineshop.entity.enumeration.RoleEnum.ROLE_USER;
 
 @RestController
 @RequiredArgsConstructor
