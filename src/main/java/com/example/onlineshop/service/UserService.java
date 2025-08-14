@@ -1,7 +1,5 @@
 package com.example.onlineshop.service;
-
 import com.example.onlineshop.entity.model.Role;
-import com.example.onlineshop.entity.enumeration.RoleEnum;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
