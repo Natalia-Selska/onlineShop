@@ -2,10 +2,7 @@ package com.example.onlineshop.entity;
 
 import com.example.onlineshop.entity.model.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -16,6 +13,7 @@ import java.util.UUID;
 @Table(name = "users")
 @Data
 @Builder
+@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,6 +34,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
+
 
 
 }

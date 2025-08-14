@@ -1,5 +1,6 @@
 package com.example.onlineshop.service;
 
+import com.example.onlineshop.entity.User;
 import com.example.onlineshop.entity.model.Role;
 import com.example.onlineshop.entity.enumeration.RoleEnum;
 import io.jsonwebtoken.Claims;
@@ -21,6 +22,7 @@ public class AuthorizationService {
     private final Key secretKey = Keys.hmacShaKeyFor("super-secret-key-12345678901234567890".getBytes());
     private static final String ROLE_CLAIM = "roles";
     private static final String ID_CLAIM = "id";
+    private static final String EMAIL_CLAIM = "email";
 
     public String genetateToken(UUID id, String email, Set<Role> roles) {
         List<String> roleNames = roles.stream()
@@ -36,17 +38,22 @@ public class AuthorizationService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token, String userEmail) {
         try {
-            Jwts.parser()
+            Claims claims = Jwts.parser()
                     .verifyWith(new SecretKeySpec(secretKey.getEncoded(), SignatureAlgorithm.HS256.getJcaName()))
                     .build()
-                    .parse(token);
-            return true;
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            String emailInToken = claims.get("email", String.class);
+
+            return userEmail.equals(emailInToken);
         } catch (JwtException e) {
             return false;
         }
     }
+
 
     public Set<RoleEnum> extractRoles(String token) {
         Claims claims = Jwts.parser()
@@ -63,6 +70,9 @@ public class AuthorizationService {
     }
 
     public UUID extractUserId(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
         Claims claims = Jwts.parser()
                 .verifyWith((SecretKey) secretKey)
                 .build()
@@ -70,7 +80,17 @@ public class AuthorizationService {
                 .getPayload();
 
         return UUID.fromString(claims.get(ID_CLAIM, String.class));
+
     }
 
+    public String extractUserEmail(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith((SecretKey) secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getSubject();
+    }
 
 }

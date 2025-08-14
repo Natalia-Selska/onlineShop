@@ -7,6 +7,8 @@ import com.example.onlineshop.service.AuthorizationService;
 import com.example.onlineshop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,25 +20,28 @@ import java.util.UUID;
 @RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
-    private final AuthorizationService authorizationService;
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PostMapping
     public void addProduct(
             @Valid @RequestBody ProductDto productDto,
-            @RequestHeader("Token") String token) {
+            @RequestHeader("Authorization") String token) {
         productService.addProduct(productDto, token);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public Product updateProduct(@Valid @RequestBody ProductUpdateDto productUpdateDto, @PathVariable("id") UUID id) {
         return productService.updateProduct(productUpdateDto, id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable("id") UUID id) {
         productService.deleteProduct(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<Product> getProducts() {
         return productService.getProducts();
